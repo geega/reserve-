@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bottom Sheet + Rounded Background</title>
+  <style>
+    :root{
+      --dur: 320ms;
+      --ease: cubic-bezier(.2,.8,.2,1);
+
+      --app-radius: 22px;
+      --sheet-radius: 22px;
+    }
+
+    /* ЧОРНИЙ ФОН "за всім" */
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background:#000; /* <- чорний позаду */
+      overflow-x:hidden;
+    }
+
+    .topbar{
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      padding: 12px 16px;
+      background: rgba(0,0,0,0.35);
+      backdrop-filter: blur(10px);
+    }
+
+    .btn{
+      appearance:none;
+      border:0;
+      border-radius: 12px;
+      padding: 10px 14px;
+      background:#fff;
+      color:#111;
+      font-weight:700;
+      cursor:pointer;
+    }
+
+    /* Контейнер екрана, який "віддаляється" */
+    .app{
+      min-height: 100vh;
+      background: #d9d9c8;          /* колір екрана */
+      padding: 16px;
+      transform-origin: top center;
+      transition: transform var(--dur) var(--ease),
+                  border-radius var(--dur) var(--ease),
+                  box-shadow var(--dur) var(--ease);
+      border-radius: 0;
+      box-shadow: none;
+      will-change: transform;
+    }
+
+    /* Коли меню відкрите — за��круглюємо і показуємо чорний фон позаду */
+    body.sheet-open .app{
+      transform: translateY(12px) scale(0.99);
+      border-radius: var(--app-radius);
+      box-shadow: 0 18px 60px rgba(0,0,0,.55);
+    }
+
+    /* Для красивого "відступу" від країв, щоб було видно чорний фон */
+    body.sheet-open .app{
+      margin: 10px 10px 0 10px;
+      min-height: calc(100vh - 10px);
+    }
+
+    /* Карточки як приклад */
+    .card{
+      background:#fff;
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.08);
+      margin: 14px 0;
+    }
+
+    .row{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px 14px;
+      align-items: start;
+    }
+
+    .label{ color:#333; font-weight:800; }
+    .value{ color:#111; font-weight:700; text-align:right; }
+
+    /* Затемнення поверх app (опціонально, як у прикладі iOS) */
+    .backdrop{
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.18);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--dur) var(--ease);
+      z-index: 10;
+    }
+    body.sheet-open .backdrop{
+      opacity: 1;
+      pointer-events: auto; /* клік — закриває */
+    }
+
+    /* Bottom sheet */
+    .sheet{
+      position: fixed;
+      left:0; right:0; bottom:0;
+    /* height: min(70vh, 540px); */
+      height: 90vh;
+      background:#fff;
+      border-radius: var(--sheet-radius) var(--sheet-radius) 0 0;
+      box-shadow: 0 -20px 50px rgba(0,0,0,.25);
+      transform: translateY(105%);
+      transition: transform var(--dur) var(--ease);
+      will-change: transform;
+      touch-action: none;
+      z-index: 11;
+    }
+    body.sheet-open .sheet{ transform: translateY(0); }
+
+    .sheet__handle{
+      width: 44px;
+      height: 5px;
+      background:#d9d9d9;
+      border-radius:999px;
+      margin: 10px auto 6px;
+    }
+
+    .sheet__content{
+      padding: 14px 18px 24px;
+      overflow:auto;
+      height: calc(100% - 28px);
+    }
+
+    .sheet h2{ margin: 8px 0 12px; }
+    .sheet ul{ list-style:none; padding:0; margin:0; }
+    .sheet li{ padding:12px 0; border-bottom:1px solid #eee; }
+    .sheet a{ color:#111; text-decoration:none; font-weight:700; }
+
+    /* Забороняємо скрол сторінки, коли відкрите меню */
+    body.sheet-open{ overflow: hidden; }
+
+    @media (prefers-reduced-motion: reduce){
+      .app, .backdrop, .sheet{ transition:none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="topbar">
+    <button class="btn" id="open">Відкрити меню</button>
+  </div>
+
+  <div class="app" id="app">
+    <div class="card">
+      <h3 style="margin:0 0 10px;">Центр комплектування та соціальної підтримки</h3>
+      <div class="row">
+        <div class="label">Звання:</div><div class="value">Солдат</div>
+        <div class="label">ВОС:</div><div class="value">956647</div>
+        <div class="label">Категорія обліку:</div><div class="value">Військовозобов'язаний</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="row">
+        <div class="label">Телефон:</div><div class="value">+380 63 778 5501</div>
+        <div class="label">Email:</div><div class="value">svyatoslav.varp@gmail.com</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p style="margin:0"><strong>Дані оновлено вчасно</strong></p>
+      <p style="margin:10px 0 0; color:#333;">Дата останнього уточнення даних: <strong>15.07.2024</strong></p>
+    </div>
+  </div>
+
+  <div class="backdrop" id="backdrop" aria-hidden="true"></div>
+
+  <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="sheet__handle"></div>
+    <div class="sheet__content">
+      <h2>Меню</h2>
+      <ul>
+        <li><a href="#">Профіль</a></li>
+        <li><a href="#">Налаштування</a></li>
+        <li><a href="#">Документи</a></li>
+        <li><a href="#">Вийти</a></li>
+      </ul>
+      <p style="margin-top:16px;color:#555;">
+        Натисни на темний фон або потягни панель вниз, щоб закрити.
+      </p>
+    </div>
+  </div>
+
+  <script>
+    const openBtn = document.getElementById('open');
+    const backdrop = document.getElementById('backdrop');
+    const sheet = document.getElementById('sheet');
+
+    function openSheet(){
+      document.body.classList.add('sheet-open');
+      sheet.setAttribute('aria-hidden', 'false');
+      backdrop.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeSheet(){
+      document.body.classList.remove('sheet-open');
+      sheet.setAttribute('aria-hidden', 'true');
+      backdrop.setAttribute('aria-hidden', 'true');
+      sheet.style.transform = '';
+    }
+
+    openBtn.addEventListener('click', openSheet);
+    backdrop.addEventListener('click', closeSheet);
+    document.addEventListener('keydown', (e) => {
+      if(e.key === 'Escape') closeSheet();
+    });
+
+    // Drag вниз для закриття
+    let startY = 0;
+    let currentY = 0;
+    let dragging = false;
+
+    sheet.addEventListener('pointerdown', (e) => {
+      dragging = true;
+      startY = e.clientY;
+      currentY = 0;
+      sheet.setPointerCapture(e.pointerId);
+      sheet.style.transition = 'none';
+    });
+
+    sheet.addEventListener('pointermove', (e) => {
+      if(!dragging) return;
+      currentY = e.clientY - startY;
+      if(currentY < 0) currentY = 0;
+      sheet.style.transform = `translateY(${currentY}px)`;
+    });
+
+    sheet.addEventListener('pointerup', () => {
+      if(!dragging) return;
+      dragging = false;
+      sheet.style.transition = '';
+      const threshold = 120;
+      if(currentY > threshold) closeSheet();
+      else sheet.style.transform = '';
+    });
+  </script>
+</body>
+</html>

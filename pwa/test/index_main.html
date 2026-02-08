@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Резерв ID (mock)</title>
+  <style>
+    :root{
+      --bg: #d6d6c5;
+      --card: #d2d2c0;
+      --border: rgba(0,0,0,.25);
+      --text: #111;
+      --muted: rgba(0,0,0,.55);
+      --danger: #d62c12;
+      --accent: #f39a1f;
+      --radius: 14px;
+      --shadow: 0 2px 0 rgba(0,0,0,.08);
+      --navH: 84px;
+    }
+
+    *{ box-sizing: border-box; }
+    html,body{ height: 100%; }
+    body{
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    /* Fake iOS status bar spacing */
+    .screen{
+      min-height: 100svh;
+      padding: 14px 14px calc(var(--navH) + 16px);
+      max-width: 430px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    /* Top "notifications" pill */
+    .top-actions{
+      display: flex;
+      justify-content: flex-end;
+      margin: 10px 0 14px;
+    }
+    .pill{
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: #fff;
+      box-shadow: 0 2px 0 rgba(0,0,0,.12);
+      border: 1px solid rgba(0,0,0,.08);
+      font-weight: 800;
+      font-size: 22px;
+      letter-spacing: -0.02em;
+      cursor: pointer;
+      user-select: none;
+    }
+    .bell{
+      width: 26px; height: 26px;
+      display: grid; place-items: center;
+    }
+    .bell svg{ width: 22px; height: 22px; }
+
+    /* Card */
+    .card{
+      background: var(--card);
+      border: 2px solid rgba(0,0,0,.25);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .danger-banner{
+      background: var(--danger);
+      color: #fff;
+      text-align: center;
+      font-weight: 900;
+      letter-spacing: .06em;
+      padding: 12px 10px;
+      font-size: 18px;
+    }
+
+    .card-body{
+      padding: 18px 18px 10px;
+      min-height: 560px; /* щоб було “порожнє поле” як на скріні */
+      position: relative;
+    }
+
+    .card-head{
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .h1{
+      margin: 0;
+      font-size: 40px;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      line-height: 1;
+    }
+
+    .emblem{
+      width: 54px;
+      height: 54px;
+      display: grid;
+      place-items: center;
+      margin-top: 6px;
+    }
+    .emblem svg{
+      width: 54px;
+      height: 54px;
+      fill: #111;
+    }
+
+    .field{
+      margin-top: 10px;
+    }
+    .label{
+      font-size: 22px;
+      color: var(--muted);
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+    .value{
+      margin-top: 10px;
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .status-bar{
+      background: var(--danger);
+      color: #fff;
+      font-weight: 800;
+      font-size: 18px;
+      letter-spacing: -0.01em;
+      padding: 12px 14px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .footer{
+      padding: 16px 18px 18px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .role{
+      color: var(--muted);
+      font-size: 26px;
+      font-weight: 700;
+      margin: 0 0 10px;
+      letter-spacing: -0.02em;
+    }
+    .name{
+      margin: 0;
+      font-size: 38px;
+      font-weight: 900;
+      line-height: 1.02;
+      letter-spacing: -0.04em;
+    }
+
+    .fab{
+      width: 58px;
+      height: 58px;
+      border: 0;
+      border-radius: 999px;
+      background: var(--accent);
+      color: #111;
+      font-size: 32px;
+      font-weight: 900;
+      display: grid;
+      place-items: center;
+      box-shadow: 0 10px 20px rgba(0,0,0,.22);
+      cursor: pointer;
+      flex: 0 0 auto;
+    }
+    .fab:active{ transform: translateY(1px); }
+
+    /* Bottom nav */
+    .bottom-nav{
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 0;
+      width: min(430px, 100%);
+      height: var(--navH);
+      background: #fff;
+      border-top: 1px solid rgba(0,0,0,.15);
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      padding: 10px 14px 12px;
+      gap: 10px;
+    }
+
+    .nav-item{
+      display: grid;
+      justify-items: center;
+      align-content: center;
+      gap: 6px;
+      color: #111;
+      text-decoration: none;
+      font-weight: 900;
+      font-size: 22px;
+      letter-spacing: -0.02em;
+      user-select: none;
+    }
+    .nav-ico{
+      width: 36px; height: 30px;
+      position: relative;
+    }
+
+    /* simple icons */
+    .ico-doc::before, .ico-doc::after{
+      content:"";
+      position:absolute;
+      left: 4px;
+      right: 4px;
+      height: 4px;
+      background:#111;
+      border-radius: 2px;
+    }
+    .ico-doc::before{ top: 6px; }
+    .ico-doc::after{ top: 16px; }
+    .ico-pin{
+      border: 3px solid #111;
+      border-radius: 6px;
+      width: 28px; height: 28px;
+      margin: 0 auto;
+      position: relative;
+    }
+    .ico-pin::after{
+      content:"";
+      position:absolute;
+      left: 50%; top: 6px;
+      width: 10px; height: 10px;
+      background:#111;
+      transform: translateX(-50%) rotate(45deg);
+      border-radius: 2px;
+    }
+    .ico-menu span{
+      position:absolute;
+      left: 4px;
+      right: 4px;
+      height: 4px;
+      background:#111;
+      border-radius: 2px;
+    }
+    .ico-menu span:nth-child(1){ top: 4px; }
+    .ico-menu span:nth-child(2){ top: 13px; }
+    .ico-menu span:nth-child(3){ top: 22px; }
+
+    /* Active tab feel */
+    .nav-item[data-active="true"]{
+      color:#000;
+    }
+    .nav-item[data-active="true"] .nav-ico{
+      filter: none;
+    }
+
+    /* Small screens */
+    @media (max-width: 360px){
+      .h1{ font-size: 34px; }
+      .name{ font-size: 32px; }
+      .pill{ font-size: 18px; }
+      .role{ font-size: 22px; }
+    }
+
+    /* Modal (notifications) */
+    .modal{
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.35);
+      display: none;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 18px;
+    }
+    .modal[open]{ display: flex; }
+    .modal__panel{
+      width: min(430px, 100%);
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 20px 50px rgba(0,0,0,.35);
+      overflow: hidden;
+    }
+    .modal__head{
+      padding: 14px 16px;
+      font-weight: 900;
+      font-size: 20px;
+      border-bottom: 1px solid rgba(0,0,0,.1);
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+    }
+    .xbtn{
+      border: 0;
+      background: transparent;
+      font-size: 22px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+    .modal__body{
+      padding: 14px 16px 16px;
+      color: rgba(0,0,0,.75);
+      line-height: 1.35;
+    }
+  </style>
+</head>
+<body>
+  <main class="screen">
+    <div class="top-actions">
+      <button class="pill" id="notifBtn" type="button" aria-haspopup="dialog" aria-controls="notifModal">
+        Сповіщення
+        <span class="bell" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 22a2.2 2.2 0 0 0 2.2-2.2H9.8A2.2 2.2 0 0 0 12 22Zm7-6V11a7 7 0 0 0-5-6.7V3a2 2 0 0 0-4 0v1.3A7 7 0 0 0 5 11v5l-2 2v1h20v-1l-2-2Z"/>
+          </svg>
+        </span>
+      </button>
+    </div>
+
+    <section class="card" aria-label="Резерв ID">
+      <div class="danger-banner">ВАС РОЗШУКУЄ ТЦК</div>
+
+      <div class="card-body">
+        <div class="card-head">
+          <h1 class="h1">Резерв ID</h1>
+          <div class="emblem" aria-hidden="true" title="Герб">
+            <!-- стилізований тризуб -->
+            <svg viewBox="0 0 64 64" aria-hidden="true">
+              <path d="M32 4c6 8 10 12 10 18 0 3-1 6-3 9 5-2 9-7 9-13 0-6-4-11-8-14h12v40c-6 9-16 14-20 16-4-2-14-7-20-16V4h12c-4 3-8 8-8 14 0 6 4 11 9 13-2-3-3-6-3-9 0-6 4-10 10-18Zm-9 18c0 7 4 13 9 17V20c-4 4-9 7-9 2Zm18 0c0 5-5 2-9-2v19c5-4 9-10 9-17Z"/>
+            </svg>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="label">Дата народження:</div>
+          <div class="value">23.06.1987</div>
+        </div>
+      </div>
+
+      <div class="status-bar" title="Статус">
+        Документ оновлено о 18:15 | 20.01.2026 • Документ оновлено о 18:15 | 20.01.2026
+      </div>
+
+      <div class="footer">
+        <div>
+          <p class="role">Військовозобов’язаний</p>
+          <p class="name">Варпіховський<br>Святослав<br>Леонідович</p>
+        </div>
+        <button class="fab" id="addBtn" type="button" aria-label="Додати">+</button>
+      </div>
+    </section>
+  </main>
+
+  <nav class="bottom-nav" aria-label="Навігація">
+    <a class="nav-item" href="#" data-active="true" id="tabReserve">
+      <div class="nav-ico ico-doc" aria-hidden="true"></div>
+      Резерв ID
+    </a>
+    <a class="nav-item" href="#" id="tabJobs">
+      <div class="nav-ico" aria-hidden="true">
+        <div class="ico-pin"></div>
+      </div>
+      Вакансії
+    </a>
+    <a class="nav-item" href="#" id="tabMenu">
+      <div class="nav-ico ico-menu" aria-hidden="true">
+        <span></span><span></span><span></span>
+      </div>
+      Меню
+    </a>
+  </nav>
+
+  <!-- simple modal -->
+  <div class="modal" id="notifModal" role="dialog" aria-modal="true" aria-label="Сповіщення">
+    <div class="modal__panel">
+      <div class="modal__head">
+        Сповіщення
+        <button class="xbtn" id="closeModal" aria-label="Закрити">×</button>
+      </div>
+      <div class="modal__body">
+        Тут можна показувати список повідомлень/сповіщень.<br>
+        (Це демо-реалізація для макету зі скріншоту.)
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Modal open/close
+    const notifBtn = document.getElementById('notifBtn');
+    const notifModal = document.getElementById('notifModal');
+    const closeModal = document.getElementById('closeModal');
+
+    function openModal(){ notifModal.setAttribute('open',''); }
+    function closeIt(){ notifModal.removeAttribute('open'); }
+
+    notifBtn.addEventListener('click', openModal);
+    closeModal.addEventListener('click', closeIt);
+    notifModal.addEventListener('click', (e) => {
+      if (e.target === notifModal) closeIt();
+    });
+
+    // Fake bottom tabs active state
+    const tabs = [
+      document.getElementById('tabReserve'),
+      document.getElementById('tabJobs'),
+      document.getElementById('tabMenu'),
+    ];
+    tabs.forEach(t => t.addEventListener('click', (e) => {
+      e.preventDefault();
+      tabs.forEach(x => x.dataset.active = "false");
+      t.dataset.active = "true";
+    }));
+
+    // Plus button demo action
+    document.getElementById('addBtn').addEventListener('click', () => {
+      alert('Дія кнопки “+” (демо).');
+    });
+  </script>
+</body>
+</html>

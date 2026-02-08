@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Резерв+ (mock)</title>
+  <style>
+    :root{
+      --bg: #d9d6c8;
+      --card: #d2cfbf;
+      --card-border: rgba(0,0,0,.25);
+      --text: #121212;
+      --muted: rgba(0,0,0,.6);
+      --bar: #6a4f2a;
+      --bar-text: rgba(255,255,255,.9);
+      --accent: #f39a1f;
+      --radius: 16px;
+    }
+
+    *{ box-sizing: border-box; }
+    body{
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .phone{
+      min-height: 100svh;
+      padding: 18px 16px 28px;
+      max-width: 430px;
+      margin: 0 auto;
+    }
+
+    /* Top bar */
+    .topbar{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 6px;
+      margin-bottom: 14px;
+    }
+    .brand{
+      font-weight: 800;
+      font-size: 26px;
+      letter-spacing: -0.02em;
+      display: inline-flex;
+      align-items: baseline;
+      gap: 2px;
+    }
+    .brand .plus{
+      color: var(--accent);
+      font-weight: 900;
+    }
+    .menu{
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      background: transparent;
+      border: 0;
+      padding: 0;
+    }
+    .menu span{
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: var(--text);
+      border-radius: 2px;
+      position: relative;
+    }
+    .menu span::before,
+    .menu span::after{
+      content: "";
+      position: absolute;
+      left: 0;
+      width: 22px;
+      height: 2px;
+      background: var(--text);
+      border-radius: 2px;
+    }
+    .menu span::before{ top: -7px; }
+    .menu span::after{ top: 7px; }
+
+    /* Card */
+    .card{
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 18px 16px 18px;
+      box-shadow: 0 1px 0 rgba(0,0,0,.08);
+    }
+
+    .card-head{
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .title{
+      font-size: 30px;
+      line-height: 1.02;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      margin: 0;
+    }
+
+    .emblem{
+      width: 44px;
+      height: 44px;
+      border: 2px solid rgba(0,0,0,.8);
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      background: rgba(0,0,0,.03);
+    }
+    .emblem svg{ width: 26px; height: 26px; }
+
+    .fields{
+      display: grid;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .field .label{
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 2px;
+    }
+    .field .value{
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+.status{
+  margin: 0 -16px 18px;
+  padding: 10px 0;            /* вертикальний паддінг, горизонтальний дамо треку */
+  background: var(--bar);
+  color: var(--bar-text);
+  overflow: hidden;           /* важливо: обрізає текст */
+}
+
+.status__track{
+  display: flex;
+  width: max-content;
+  gap: 28px;                  /* відстань між дублями */
+  padding: 0 14px;            /* як було раніше */
+  will-change: transform;
+  animation: status-marquee 10s linear infinite;
+}
+
+.status__text{
+  white-space: nowrap;
+  font-size: 14px;
+}
+
+/* рух вліво на ширину першого тексту (бо він продубльований) */
+@keyframes status-marquee{
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* повага до системного налаштування "reduced motion" */
+@media (prefers-reduced-motion: reduce){
+  .status__track{ animation: none; }
+}
+
+    .person{
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .person .name{
+      margin: 0;
+      font-weight: 900;
+      font-size: 30px;
+      line-height: 1.02;
+      letter-spacing: -0.03em;
+    }
+
+    .fab{
+      width: 52px;
+      height: 52px;
+      border-radius: 999px;
+      border: 0;
+      background: var(--accent);
+      color: #111;
+      font-weight: 900;
+      font-size: 28px;
+      display: grid;
+      place-items: center;
+      box-shadow: 0 8px 18px rgba(0,0,0,.18);
+      flex: 0 0 auto;
+      cursor: pointer;
+    }
+    .fab:active{ transform: translateY(1px); }
+
+    /* Small tweaks for very narrow screens */
+    @media (max-width: 360px){
+      .title, .person .name{ font-size: 26px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="phone">
+    <header class="topbar">
+      <div class="brand">Резерв<span class="plus">+</span></div>
+      <button class="menu" aria-label="Меню">
+        <span></span>
+      </button>
+    </header>
+
+    <section class="card" aria-label="Інформація з реєстру Оберіг">
+      <div class="card-head">
+        <h1 class="title">Інформація<br>з реєстру<br>Оберіг</h1>
+
+        <div class="emblem" aria-hidden="true" title="Герб">
+          <!-- простий стилізований знак -->
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M6 4h12v6c0 6-4 9-6 10-2-1-6-4-6-10V4z" stroke="currentColor" stroke-width="2"/>
+            <path d="M12 6v14" stroke="currentColor" stroke-width="2"/>
+            <path d="M8 9h8" stroke="currentColor" stroke-width="2"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="fields">
+        <div class="field">
+          <div class="label">Дата народження:</div>
+          <div class="value">23.06.1987</div>
+        </div>
+
+        <div class="field">
+          <div class="label">Бронювання до:</div>
+          <div class="value">31.12.2026</div>
+        </div>
+      </div>
+
+      <div class="status" aria-label="Статус">
+  <div class="status__track">
+    <span class="status__text">
+      На обліку • Дані оновлені о 18:42 | 20.01.2026
+    </span>
+    <!-- дубль для безшовного циклу -->
+    <span class="status__text" aria-hidden="true">
+      На обліку • Дані оновлені о 18:42 | 20.01.2026
+    </span>
+  </div>
+</div>  
+
+      <div class="person">
+        <p class="name">Варпіховський<br>Святослав<br>Леонідович</p>
+        <button class="fab" aria-label="Додати">+</button>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

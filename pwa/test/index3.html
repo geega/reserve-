@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bottom Sheet Menu</title>
+  <style>
+    :root {
+      --radius: 18px;
+      --sheet-radius: 20px;
+      --dur: 320ms;
+      --ease: cubic-bezier(.2,.8,.2,1);
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: #d9d9c8;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      padding: 12px 16px;
+      background: rgba(217, 217, 200, 0.9);
+      backdrop-filter: blur(10px);
+    }
+
+    .btn {
+      appearance: none;
+      border: 0;
+      background: #111;
+      color: #fff;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* Те, що буде "віддалятися" */
+    .app {
+      min-height: 100vh;
+      padding: 16px;
+      transition: transform var(--dur) var(--ease), filter var(--dur) var(--ease);
+      transform-origin: top center;
+    }
+
+    body.sheet-open .app {
+      transform: translateY(-10px) scale(0.92);
+      filter: saturate(0.95);
+      border-radius: var(--radius);
+    }
+
+    /* Просто щоб було схоже на твій приклад */
+    .card {
+      background: #fff;
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.08);
+      margin: 14px 0;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px 14px;
+    }
+
+    .label { color: #333; font-weight: 700; }
+    .value { color: #111; font-weight: 600; text-align: right; }
+
+    /* Backdrop */
+    .backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.25);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--dur) var(--ease);
+      z-index: 10;
+    }
+
+    body.sheet-open .backdrop {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Bottom sheet */
+    .sheet {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: min(70vh, 520px);
+      background: #fff;
+      border-radius: var(--sheet-radius) var(--sheet-radius) 0 0;
+      box-shadow: 0 -20px 50px rgba(0,0,0,.25);
+      transform: translateY(105%);
+      transition: transform var(--dur) var(--ease);
+      will-change: transform;
+      touch-action: none; /* для drag */
+      z-index: 11;
+    }
+
+    body.sheet-open .sheet {
+      transform: translateY(0);
+    }
+
+    .sheet__handle {
+      width: 44px;
+      height: 5px;
+      background: #d9d9d9;
+      border-radius: 999px;
+      margin: 10px auto 6px;
+    }
+
+    .sheet__content {
+      padding: 14px 18px 24px;
+      overflow: auto;
+      height: calc(100% - 28px);
+    }
+
+    .sheet h2 { margin: 8px 0 12px; }
+    .sheet ul { list-style: none; padding: 0; margin: 0; }
+    .sheet li { padding: 12px 0; border-bottom: 1px solid #eee; }
+    .sheet a { color: #111; text-decoration: none; font-weight: 600; }
+
+    /* Коли відкрито — блокуємо скрол сторінки */
+    body.sheet-open {
+      overflow: hidden;
+      touch-action: none;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .app, .backdrop, .sheet { transition: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="topbar">
+    <button class="btn" id="open">Відкрити меню</button>
+  </div>
+
+  <!-- Екран позаду -->
+  <div class="app" id="app">
+    <div class="card">
+      <h3 style="margin:0 0 10px;">Центр комплектування та соціальної підтримки</h3>
+      <div class="row">
+        <div class="label">Звання:</div><div class="value">Солдат</div>
+        <div class="label">ВОС:</div><div class="value">956647</div>
+        <div class="label">Категорія обліку:</div><div class="value">Військовозобов'язаний</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="row">
+        <div class="label">Телефон:</div><div class="value">+380 63 778 5501</div>
+        <div class="label">Email:</div><div class="value">svyatoslav.varp@gmail.com</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p style="margin:0"><strong>Дані оновлено вчасно</strong></p>
+      <p style="margin:10px 0 0; color:#333;">Дата останнього уточнення даних: <strong>15.07.2024</strong></p>
+    </div>
+  </div>
+
+  <!-- Затемнення -->
+  <div class="backdrop" id="backdrop" aria-hidden="true"></div>
+
+  <!-- Bottom sheet -->
+  <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="sheet__handle"></div>
+    <div class="sheet__content">
+      <h2>Меню</h2>
+      <ul>
+        <li><a href="#">Профіль</a></li>
+        <li><a href="#">Налаштування</a></li>
+        <li><a href="#">Документи</a></li>
+        <li><a href="#">Вийти</a></li>
+      </ul>
+      <p style="margin-top:16px;color:#555;">
+        Порада: тягни панель вниз або натисни на фон, щоб закрити.
+      </p>
+    </div>
+  </div>
+
+  <script>
+    const openBtn = document.getElementById('open');
+    const backdrop = document.getElementById('backdrop');
+    const sheet = document.getElementById('sheet');
+
+    function openSheet() {
+      document.body.classList.add('sheet-open');
+      sheet.setAttribute('aria-hidden', 'false');
+      backdrop.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeSheet() {
+      document.body.classList.remove('sheet-open');
+      sheet.setAttribute('aria-hidden', 'true');
+      backdrop.setAttribute('aria-hidden', 'true');
+      sheet.style.transform = ''; // скидаємо transform після drag
+    }
+
+    openBtn.addEventListener('click', openSheet);
+    backdrop.addEventListener('click', closeSheet);
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeSheet();
+    });
+
+    // Drag вниз для закриття
+    let startY = 0;
+    let currentY = 0;
+    let dragging = false;
+
+    sheet.addEventListener('pointerdown', (e) => {
+      // краще починати drag за верхню частину (handle), але можна і всю панель
+      dragging = true;
+      startY = e.clientY;
+      currentY = 0;
+      sheet.setPointerCapture(e.pointerId);
+      sheet.style.transition = 'none';
+    });
+
+    sheet.addEventListener('pointermove', (e) => {
+      if (!dragging) return;
+      currentY = e.clientY - startY;
+      if (currentY < 0) currentY = 0;
+      sheet.style.transform = `translateY(${currentY}px)`;
+    });
+
+    sheet.addEventListener('pointerup', () => {
+      if (!dragging) return;
+      dragging = false;
+      sheet.style.transition = '';
+      const threshold = 120; // px
+      if (currentY > threshold) closeSheet();
+      else sheet.style.transform = ''; // повернути назад у відкрите
+    });
+  </script>
+</body>
+</html> 

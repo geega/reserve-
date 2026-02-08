@@ -1,0 +1,197 @@
+:root{
+  --bg: #d8d6c7;
+  --card: #d4d2bf;
+  --card-border: rgba(0,0,0,.35);
+  --shadow: rgba(0,0,0,.15);
+  --accent: #d63422;
+  --text: #121212;
+  --muted: rgba(0,0,0,.55);
+  --pill: #f2f1ea;
+  --fab: #f39b11;
+
+  --radius: 14px; 
+}
+
+*{ box-sizing: border-box; }
+html, body{ height:100%; }
+body{
+  margin:0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.app{
+  min-height:100%;
+  padding: 18px 14px 92px;
+}
+
+/* Верхня панель */
+.topbar{
+  display:flex;
+  justify-content:flex-end;
+  padding-top: 8px;
+}
+.pill{
+  display:flex;
+  gap: 10px;
+  align-items:center;
+  padding: 12px 18px;
+  background: var(--pill);
+  border: 0;
+  border-radius: 999px;
+  box-shadow: 0 2px 0 var(--shadow);
+  font-size: 22px;
+  font-weight: 600;
+}
+.pill:active{ transform: translateY(1px); }
+.pill__icon{ font-size: 20px; }
+
+/* Контент */
+.content{
+  margin-top: 18px;
+  display:flex;
+  justify-content:center;
+}
+.card{
+  width: min(420px, 100%);
+  background: var(--card);
+  border: 2px solid var(--card-border);
+  border-radius: var(--radius);
+  box-shadow: 0 2px 0 var(--shadow);
+  overflow:hidden;
+  position: relative;
+}
+
+.card__stripe{
+  background: var(--accent);
+  color:#fff;
+  text-align:center;
+  padding: 10px 12px;
+  font-weight: 700;
+  letter-spacing: .4px;
+}
+.card__stripe--top{
+  font-size: 20px;
+}
+.card__stripe--mid{
+  font-size: 22px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card__body{
+  padding: 18px 18px 16px;
+  min-height: 360px;
+}
+.card__head{
+  display:flex;
+  align-items:flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.title{
+  margin: 6px 0 10px;
+  font-size: 46px;
+  letter-spacing: .2px;
+}
+.coat{
+  margin-top: 18px;
+  filter: drop-shadow(0 1px 0 rgba(0,0,0,.15));
+}
+
+.meta{
+  margin-top: 14px;
+}
+.label{
+  font-size: 30px;
+  color: var(--muted);
+  font-weight: 600;
+}
+.value{
+  margin-top: 2px;
+  font-size: 36px;
+  font-weight: 800;
+}
+
+.card__footer{
+  padding: 18px 18px 22px;
+  position: relative;
+}
+.small{
+  font-size: 28px;
+  color: var(--muted);
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.name{
+  font-size: 46px;
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: .2px;
+}
+
+/* FAB */
+.fab{
+  position:absolute;
+  right: 16px;
+  bottom: 16px;
+  width: 70px;
+  height: 70px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--fab);
+  color: #111;
+  font-size: 44px;
+  font-weight: 700;
+  box-shadow: 0 6px 0 rgba(0,0,0,.18);
+}
+.fab:active{ transform: translateY(2px); box-shadow: 0 4px 0 rgba(0,0,0,.18); }
+
+/* Нижня навігація */
+.bottomnav{
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 10px 10px calc(10px + env(safe-area-inset-bottom));
+  background: #fff;
+  border-top: 1px solid rgba(0,0,0,.15);
+  display:flex;
+  gap: 6px;
+  justify-content: space-around;
+}
+.navitem{
+  flex: 1;
+  background: transparent;
+  border: 0;
+  padding: 10px 8px;
+  border-radius: 14px;
+  display:flex;
+  flex-direction: column;
+  align-items:center;
+  gap: 8px;
+  color: #111;
+}
+.navicon{
+  font-size: 26px;
+  line-height: 1;
+}
+.navtext{
+  font-size: 24px;
+  font-weight: 700;
+}
+.navitem.is-active{
+  background: rgba(0,0,0,.06);
+}
+
+/* Дрібні адаптації */
+@media (max-width: 360px){
+  .title{ font-size: 40px; }
+  .name{ font-size: 40px; }
+  .label{ font-size: 26px; }
+  .value{ font-size: 32px; }
+  .card__stripe--mid{ font-size: 18px; }
+  .navtext{ font-size: 20px; }
+}

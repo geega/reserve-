@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#d63422" />
+  <title>Резерв ID</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <main class="app">
+    <header class="topbar">
+      <button class="pill" type="button" id="btnNotifications" aria-label="Сповіщення">
+        <span class="pill__text">Сповіщення</span>
+        <span class="pill__icon" aria-hidden="true">🔔</span>
+      </button>
+    </header>
+
+    <section class="content">
+      <article class="card" aria-label="Картка Резерв ID">
+        <div class="card__stripe card__stripe--top">
+          <span>ВАС РОЗШУКУЄ ТЦК</span>
+        </div>
+
+        <div class="card__body">
+          <div class="card__head">
+            <h1 class="title">Резерв ID</h1>
+
+            <!-- Спрощений тризуб як SVG -->
+            <div class="coat" aria-hidden="true">
+              <svg viewBox="0 0 64 64" width="42" height="42">
+                <path fill="#111" d="M32 4c7 8 12 11 20 13v34c-6 6-12 9-20 9s-14-3-20-9V17C20 15 25 12 32 4z"/>
+                <path fill="#fff" opacity=".9" d="M32 12c4 5 8 7 13 8v26c-4 4-8 6-13 6s-9-2-13-6V20c5-1 9-3 13-8z"/>
+                <path fill="#111" d="M32 18l-5 6v18l5 4 5-4V24l-5-6z"/>
+              </svg>
+            </div>
+          </div>
+
+          <div class="meta">
+            <div class="label">Дата народження:</div>
+            <div class="value" id="dob">23.06.1987</div>
+          </div>
+        </div>
+
+        <div class="card__stripe card__stripe--mid" aria-live="polite" id="docInfo">
+          Оновлено о <span id="updatedTime">17:56</span> | <span id="updatedDate">25.01.2026</span> • Документ оновлено о <span id="docUpdatedTime">17:56</span>
+        </div>
+
+        <div class="card__footer">
+          <div class="small">Військовозобов’язаний</div>
+          <div class="name" id="fullName">
+            Варпіховський<br/>Святослав<br/>Леонідович
+          </div>
+
+          <button class="fab" type="button" id="btnAdd" aria-label="Додати">
+            +
+          </button>
+        </div>
+      </article>
+    </section>
+
+    <nav class="bottomnav" aria-label="Нижня навігація">
+      <button class="navitem is-active" type="button" data-tab="reserve" aria-current="page">
+        <div class="navicon">≡</div>
+        <div class="navtext">Резерв ID</div>
+      </button>
+      <button class="navitem" type="button" data-tab="vacancies">
+        <div class="navicon">◈</div>
+        <div class="navtext">Вакансії</div>
+      </button>
+      <button class="navitem" type="button" data-tab="menu">
+        <div class="navicon">☰</div>
+        <div class="navtext">Меню</div>
+      </button>
+    </nav>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
