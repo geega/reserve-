@@ -9,9 +9,9 @@ services:
       - ./pwa:/var/www
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.geega-tools-loe.rule=Host(`s.reserve.geega.net`)"
-      - "traefik.http.routers.geega-tools-loe.entrypoints=websecure"
-      - "traefik.http.services.geega-tools-loe.loadbalancer.server.port=80"
+      - "traefik.http.routers.geega-reserve.rule=Host(`s.reserve.geega.net`)"
+      - "traefik.http.routers.geega-reserve.entrypoints=websecure"
+      - "traefik.http.services.geega-reserve.loadbalancer.server.port=80"
     environment:
       - AA_TOKEN=abc
     networks:
