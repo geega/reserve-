@@ -35,3 +35,7 @@ google-services.json
 
 #Node modules
 /pwa/node_modules
+
+# Docker
+
+docker-compose.override.yml
