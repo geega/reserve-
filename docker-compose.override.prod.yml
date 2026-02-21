@@ -1,0 +1,6 @@
+version: '3.9'
+
+services:
+  reserveminus:
+    labels:
+      - "traefik.http.routers.geega.tls.certresolver=letsencrypt"
