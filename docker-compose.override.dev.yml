@@ -1,0 +1,13 @@
+version: '3.9'
+
+services:
+  reserveminus:
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.geega-tools-loe.rule=Host(`s.reserve.geega.local`)"
+      - "traefik.http.routers.geega-tools-loe.entrypoints=web"
+      - "traefik.http.services.geega-tools-loe.loadbalancer.server.port=80"
+    ports:
+      - "8081:80"
+
+      
