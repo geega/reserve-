@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#2b2b25" />
+    <title>Резерв+</title>
+    <link rel="manifest" href="manifest.webmanifest" />
+
+<style>
+  :root {
+    /* App palette */
+    --bg: #d6d6c5;
+    --card: rgba(210, 210, 192, .55);
+    --border: rgba(0, 0, 0, .18);
+    --text: #111;
+    --muted: rgba(0, 0, 0, .55);
+    --danger: #de310b;
+    --accent: #fd890c;
+    --info: rgb(111 82 35);
+
+    /* Sizing */
+    --radius: clamp(0.85rem, 2.4vw, 1.1rem);
+    --shadow: 0 0.2rem 0 rgba(0, 0, 0, .08);
+
+    /* Bottom nav height */
+    --navH: clamp(4.8rem, 9svh, 5.8rem);
+
+    /* Safe area helpers */
+    --sat: env(safe-area-inset-top, 0px);
+    --sab: env(safe-area-inset-bottom, 0px);
+    --sal: env(safe-area-inset-left, 0px);
+    --sar: env(safe-area-inset-right, 0px);
+
+    /*
+      Chrome DevTools device emulation can behave poorly with a fixed "phone width"
+      and with svh/dvh rounding. We keep "phone" constraints only for non-touch/desktop.
+    */
+    --phoneW: 28rem;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html,
+  body {
+    height: 100%;
+  }
+
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden; /* Prevent horizontal micro-overflow */
+  }
+
+  /* Screen router */
+  .screen {
+    display: none;
+    min-height: 100vh; /* Fallback */
+    min-height: 100svh;
+  }
+
+  .screen.is-active {
+    display: block;
+  }
+
+  /* ---------- LOAD (splash) ---------- */
+  .load {
+    background: #2b2b25;
+    place-items: center;
+    padding: 1.5rem;
+  }
+
+  .load.is-active {
+    display: grid;
+  }
+
+  .load__content {
+    text-align: center;
+    color: #d7d3c8;
+    transform: translateY(-0.6rem);
+  }
+
+  .load__logo {
+    width: 4.875rem;
+    height: 4.875rem;
+    margin: 0 auto 1.125rem;
+    display: grid;
+    place-items: center;
+  }
+
+  .load__logo svg {
+    width: 100%;
+    height: 100%;
+    fill: #d7d3c8;
+  }
+
+  .load__text {
+    margin: 0;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1.02;
+    font-size: clamp(1.5rem, 4.5vw, 2rem);
+  }
+
+  .load__text span {
+    display: block;
+  }
+
+  /* ---------- MAIN LAYOUT ---------- */
+
+  .app {
+    /*
+      Critical: In Chrome DevTools emulation, the page can become "unusable" due to:
+      - width constraint fighting the emulated viewport
+      - fixed bottom nav + svh rounding causing extra scroll or overlap
+      So: default to full width, then constrain only on real desktop (hover devices).
+    */
+    width: 100%;
+    margin-inline: auto;
+
+    min-height: 100vh;  /* Fallback */
+    min-height: 100dvh; /* Better in Chrome */
+    min-height: 100svh; /* Better in iOS */
+
+    padding:
+      calc(1rem + var(--sat))
+      calc(1rem + var(--sar))
+      calc(var(--navH) + 1rem + var(--sab))
+      calc(1rem + var(--sal));
+
+    display: grid;
+    gap: clamp(0.9rem, 2.5vh, 1.4rem);
+    align-content: start;
+  }
+
+  /*
+    Constrain the layout only for real desktop/laptop pointers.
+    This keeps iPhone (touch) and Chrome device emulation (no hover) full-width and stable.
+  */
+  @media (hover: hover) and (pointer: fine) {
+    .app {
+      width: min(100%, var(--phoneW));
+    }
+
+    .bottom-nav {
+      width: min(100%, var(--phoneW));
+      left: 50%;
+      transform: translateX(-50%);
+    }
+  }
+
+  .top-actions {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .pill {
+    color: #1c1c1c;
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+
+    padding: 0.75rem 1.1rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .75);
+    border: 1px solid rgba(0, 0, 0, .08);
+
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+
+    font-weight: 600;
+    font-size: 1.05rem;
+    letter-spacing: 0.01em;
+
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .bell {
+    width: 1.5rem;
+    height: 1.5rem;
+    display: grid;
+    place-items: center;
+  }
+
+  .bell svg {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  /* ---------- CARD (Reserve ID) ---------- */
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: clip;
+    box-shadow: var(--shadow);
+
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+
+  .card-body {
+    padding: clamp(1rem, 3.3vw, 1.35rem);
+    display: grid;
+    gap: clamp(0.9rem, 2.2vh, 1.2rem);
+  }
+
+  .card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .h1 {
+    margin: 0;
+    font-size: clamp(1.9rem, 5.5vw, 2.4rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+  }
+
+  .emblem {
+    width: clamp(2.3rem, 7vw, 3rem);
+    aspect-ratio: 1 / 1;
+    display: grid;
+    place-items: center;
+    border-radius: 0.75rem;
+  }
+
+  .emblem svg {
+    width: 75%;
+    height: 75%;
+    fill: #111;
+  }
+
+  .card-grid {
+    display: grid;
+    grid-template-columns: minmax(9.5rem, 40%) 1fr;
+    gap: clamp(1rem, 3vw, 1.35rem);
+    align-items: start;
+  }
+
+  .avatar {
+    border-radius: 1rem;
+    background: rgba(255, 255, 255, .85);
+    border: 1px solid rgba(0, 0, 0, .08);
+    overflow: hidden;
+
+    aspect-ratio: 3 / 4;
+    display: grid;
+    place-items: center;
+  }
+
+  .avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .fields {
+    display: grid;
+    gap: 0.9rem;
+    padding-top: 0.35rem;
+  }
+
+  .field .label {
+    font-size: 1.05rem;
+    color: var(--muted);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.35rem;
+  }
+
+  .field .value {
+    font-size: clamp(1.25rem, 4.2vw, 1.75rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+
+  .status-bar {
+    background: var(--info);
+    color: #fff;
+    font-weight: 600;
+    font-size: 1.05rem;
+    padding: 0.55rem 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
+  .status-bar-ticker {
+    display: inline-block;
+    padding-left: 100%;
+    animation: ticker 14s linear infinite;
+    will-change: transform;
+  }
+
+  @keyframes ticker {
+    0% { transform: translateX(0%); }
+    100% { transform: translateX(-100%); }
+  }
+
+  .footer {
+    padding: clamp(1rem, 3.3vw, 1.35rem);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1rem;
+    align-items: end;
+  }
+
+  .role {
+    color: var(--muted);
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin: 0 0 0.4rem;
+    letter-spacing: -0.01em;
+  }
+
+  .name {
+    margin: 0;
+    font-size: clamp(2rem, 7vw, 2.9rem);
+    font-weight: 900;
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+  }
+
+  .fab {
+    width: clamp(3.2rem, 11vw, 3.9rem);
+    aspect-ratio: 1 / 1;
+    border: 0;
+    border-radius: 999px;
+    background: var(--accent);
+    color: #111;
+
+    font-size: clamp(2rem, 8vw, 2.6rem);
+    font-weight: 500;
+
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+
+    -webkit-tap-highlight-color: transparent;
+    box-shadow: 0 0.9rem 1.4rem rgba(0, 0, 0, .18);
+  }
+
+  .fab:active {
+    transform: translateY(1px);
+  }
+
+  /* ---------- NAV BAR ---------- */
+  .bottom-nav {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    width: 100%;
+
+    padding:
+      0.65rem calc(1rem + var(--sar))
+      calc(0.65rem + var(--sab))
+      calc(1rem + var(--sal));
+
+    height: calc(var(--navH) + var(--sab));
+
+    background: rgba(255, 255, 255, .78);
+    border-top: 1px solid rgba(0, 0, 0, .12);
+
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0.75rem;
+    align-items: center;
+  }
+
+  .nav-item {
+    display: grid;
+    justify-items: center;
+    align-content: center;
+    gap: 0.4rem;
+
+    color: #111;
+    text-decoration: none;
+
+    font-weight: 800;
+    font-size: 1.15rem;
+    letter-spacing: -0.02em;
+
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .nav-ico {
+    width: 2.25rem;
+    height: 2.05rem;
+    position: relative;
+  }
+
+  .ico-doc::before,
+  .ico-doc::after {
+    content: "";
+    position: absolute;
+    left: 0.35rem;
+    right: 0.35rem;
+    height: 0.25rem;
+    background: #111;
+    border-radius: 0.2rem;
+  }
+
+  .ico-doc::before { top: 0.35rem; }
+  .ico-doc::after  { top: 1.05rem; }
+
+  .ico-pin {
+    border: 0.2rem solid #111;
+    border-radius: 0.55rem;
+    width: 1.65rem;
+    height: 2rem;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .ico-pin::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 0.55rem;
+    width: 0.65rem;
+    height: 0.65rem;
+    background: #111;
+    transform: translateX(-50%) rotate(45deg);
+    border-radius: 0.15rem;
+  }
+
+  .ico-menu span {
+    position: absolute;
+    left: 0.35rem;
+    right: 0.35rem;
+    height: 0.25rem;
+    background: #111;
+  }
+
+  .ico-menu span:nth-child(1) { top: 0.25rem; }
+  .ico-menu span:nth-child(2) { top: 0.9rem; }
+  .ico-menu span:nth-child(3) { top: 1.55rem; }
+
+  /* ---------- Small devices tuning ---------- */
+  @media (max-width: 360px) {
+    .card-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .avatar {
+      aspect-ratio: 4 / 3;
+    }
+  }
+
+  /* ---------- Reduced motion preference ---------- */
+  @media (prefers-reduced-motion: reduce) {
+    .status-bar-ticker {
+      animation: none;
+      padding-left: 0;
+    }
+  }
+</style>
+</head>
+
+<body>
+    <main>
+        <!-- LOAD SCREEN -->
+        <section class="screen load is-active" id="screen-load">
+            <div class="load__content">
+                <div class="load__logo" aria-hidden="true">
+                    <svg width="110" height="126" viewBox="0 0 110 126" fill="none" xmlns="http://www.w3.org/2000/svg"
+                        role="img" aria-label="Логотип Міністерства оборони України">
+                        <path
+                            d="M0 0.0310149H109.894C109.925 0.681693 109.986 1.27042 109.986 1.89012C109.986 17.5374 110.017 33.2156 109.986 48.8629C109.925 65.9665 105.51 81.7687 95.5705 95.8357C87.9149 106.68 77.9443 114.829 66.3375 121.026C63.0037 122.792 59.5463 124.28 56.089 125.798C55.5025 126.046 54.6073 126.077 54.0208 125.829C39.5741 120.004 26.9178 111.669 17.0706 99.3679C8.95201 89.2669 3.88948 77.7716 1.4817 65.0369C0.401284 59.2738 3.01462e-05 53.4486 0.0308992 47.5925C0.0926372 32.441 0.0308992 17.3205 0.0308992 2.16897C0.0308992 1.4873 0.0308992 0.805602 0.0308992 0L0 0.0310149ZM32.5977 74.4562C33.1533 68.5071 33.8015 62.7131 34.2337 56.8879C34.7276 50.3502 34.3572 43.8124 32.6594 37.4606C30.8073 30.489 27.1339 24.8188 20.6514 21.2245C20.0957 20.9147 19.4783 20.6978 18.861 20.388V89.7937C19.6636 89.7937 20.2809 89.7937 20.8983 89.7937C28.8008 89.7937 36.6724 89.7937 44.5749 89.7937C45.717 89.7937 46.2109 90.1655 46.7048 91.2189C48.3409 94.7202 50.1313 98.1905 51.9834 101.599C52.7551 103.024 53.8973 104.233 54.9468 105.658C58.5894 101.289 61.3059 96.7343 63.0963 91.6838C63.6519 90.1036 64.4236 89.7937 65.9362 89.7937C73.6535 89.8556 81.3707 89.8247 89.088 89.8247H90.971V20.388C90.2918 20.7288 89.7671 20.9457 89.2732 21.2245C82.2968 25.1286 78.6234 31.3565 76.8947 38.9478C74.8882 47.7474 75.4439 56.6091 76.3699 65.4397C76.6786 68.4453 77.0799 71.4197 77.4503 74.4562H62.7567C62.7567 73.6816 62.7567 72.9999 62.7567 72.3493C62.8802 67.6086 62.9728 62.837 63.158 58.0963C63.4358 51.2797 63.7445 44.463 64.1458 37.6774C64.3927 33.4325 64.7323 29.2496 63.8988 25.0047C62.5715 18.4359 59.5463 12.7967 54.916 7.8082C54.3295 8.48987 53.8047 9.07853 53.3108 9.69822C47.6926 16.5458 45.007 24.385 45.4392 33.2156C45.6553 37.9562 46.1492 42.697 46.3653 47.4376C46.6431 53.7275 46.8283 60.0174 47.0135 66.3382C47.0752 69.0029 47.0135 71.6986 47.0135 74.4872H32.5668L32.5977 74.4562Z"
+                            fill="white"></path>
+                    </svg>
+                </div>
+                <p class="load__text">
+                    <span>Міністерство</span>
+                    <span>оборони</span>
+                    <span>України</span>
+                </p>
+            </div>
+        </section>
+
+        <!-- MAIN SCREEN -->
+        <section class="screen" id="screen-main">
+            <div class="app">
+                <div class="top-actions">
+                    <button class="pill" id="notifBtn" type="button" aria-haspopup="dialog" aria-controls="notifModal">
+                        Сповіщення
+                        <span class="bell" aria-hidden="true">
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M12 22a2.2 2.2 0 0 0 2.2-2.2H9.8A2.2 2.2 0 0 0 12 22Zm7-6V11a7 7 0 0 0-5-6.7V3a2 2 0 0 0-4 0v1.3A7 7 0 0 0 5 11v5l-2 2v1h20v-1l-2-2Z" />
+                            </svg>
+                        </span>
+                    </button>
+                </div>
+
+                <section class="card" aria-label="Резерв ID">
+                    <div class="card-body">
+                        <div class="card-head">
+                            <h1 class="h1">Резерв ID</h1>
+                            <div class="emblem" aria-hidden="true" title="Герб">
+                                <svg width="110" height="126" viewBox="0 0 110 126" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg" role="img"
+                                    aria-label="Логотип Міністерства оборони України">
+                                    <path
+                                        d="M0 0.0310149H109.894C109.925 0.681693 109.986 1.27042 109.986 1.89012C109.986 17.5374 110.017 33.2156 109.986 48.8629C109.925 65.9665 105.51 81.7687 95.5705 95.8357C87.9149 106.68 77.9443 114.829 66.3375 121.026C63.0037 122.792 59.5463 124.28 56.089 125.798C55.5025 126.046 54.6073 126.077 54.0208 125.829C39.5741 120.004 26.9178 111.669 17.0706 99.3679C8.95201 89.2669 3.88948 77.7716 1.4817 65.0369C0.401284 59.2738 3.01462e-05 53.4486 0.0308992 47.5925C0.0926372 32.441 0.0308992 17.3205 0.0308992 2.16897C0.0308992 1.4873 0.0308992 0.805602 0.0308992 0L0 0.0310149ZM32.5977 74.4562C33.1533 68.5071 33.8015 62.7131 34.2337 56.8879C34.7276 50.3502 34.3572 43.8124 32.6594 37.4606C30.8073 30.489 27.1339 24.8188 20.6514 21.2245C20.0957 20.9147 19.4783 20.6978 18.861 20.388V89.7937C19.6636 89.7937 20.2809 89.7937 20.8983 89.7937C28.8008 89.7937 36.6724 89.7937 44.5749 89.7937C45.717 89.7937 46.2109 90.1655 46.7048 91.2189C48.3409 94.7202 50.1313 98.1905 51.9834 101.599C52.7551 103.024 53.8973 104.233 54.9468 105.658C58.5894 101.289 61.3059 96.7343 63.0963 91.6838C63.6519 90.1036 64.4236 89.7937 65.9362 89.7937C73.6535 89.8556 81.3707 89.8247 89.088 89.8247H90.971V20.388C90.2918 20.7288 89.7671 20.9457 89.2732 21.2245C82.2968 25.1286 78.6234 31.3565 76.8947 38.9478C74.8882 47.7474 75.4439 56.6091 76.3699 65.4397C76.6786 68.4453 77.0799 71.4197 77.4503 74.4562H62.7567C62.7567 73.6816 62.7567 72.9999 62.7567 72.3493C62.8802 67.6086 62.9728 62.837 63.158 58.0963C63.4358 51.2797 63.7445 44.463 64.1458 37.6774C64.3927 33.4325 64.7323 29.2496 63.8988 25.0047C62.5715 18.4359 59.5463 12.7967 54.916 7.8082C54.3295 8.48987 53.8047 9.07853 53.3108 9.69822C47.6926 16.5458 45.007 24.385 45.4392 33.2156C45.6553 37.9562 46.1492 42.697 46.3653 47.4376C46.6431 53.7275 46.8283 60.0174 47.0135 66.3382C47.0752 69.0029 47.0135 71.6986 47.0135 74.4872H32.5668L32.5977 74.4562Z"
+                                        fill="black"></path>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <div class="card-grid">
+                            <!-- Replace src with your real user photo if you have it -->
+                            <div class="avatar" aria-label="Фото">
+                                <img width="30" height="40" src="https://placehold.co/300x400.png"
+                                    alt="Фото профілю">
+                            </div>
+
+                            <div class="fields" aria-label="Дані">
+                                <div class="field">
+                                    <div class="label">Дата народження</div>
+                                    <div class="value">23.06.1987</div>
+                                </div>
+                                <div class="field">
+                                    <div class="label">Відстрочка до:</div>
+                                    <div class="value">23.06.2026</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="status-bar" title="Статус">
+                        <div class="status-bar-ticker">
+                            20.01.2026 • Документ оновлено о 18:15 | 20.01.2026 • Документ оновлено о 18:15 | 20.01.2026
+                            • Документ оновлено о 18:15 | 20.01.2026 • Документ оновлено о 18:15 |
+                        </div>
+                    </div>
+
+                    <div class="footer">
+                        <div>
+                            <p class="role">Військовозобов’язаний</p>
+                            <p class="name">Варпіховський<br>Святослав<br>Леонідович</p>
+                        </div>
+                        <button class="fab" id="addBtn" type="button" aria-label="Додати">+</button>
+                    </div>
+                </section>
+            </div>
+
+            <nav class="bottom-nav" aria-label="Навігація">
+                <a class="nav-item" href="#" data-active="true" id="tabReserve">
+                    <div class="nav-ico ico-doc" aria-hidden="true"></div>
+                    Резерв ID
+                </a>
+                <a class="nav-item" href="#" id="tabJobs">
+                    <div class="nav-ico" aria-hidden="true">
+                        <div class="ico-pin"></div>
+                    </div>
+                    Вакансії
+                </a>
+                <a class="nav-item" href="#" id="tabMenu">
+                    <div class="nav-ico ico-menu" aria-hidden="true"><span></span><span></span><span></span></div>
+                    Меню
+                </a>
+            </nav>
+        </section>
+    </main>
+
+    <script>
+        function changeThemeColor(color) {
+            const metaThemeColor = document.querySelector("meta[name='theme-color']");
+            if (metaThemeColor) metaThemeColor.setAttribute("content", color);
+        }
+
+        // ---------- Simple screen state ----------
+        const screens = {
+            load: document.getElementById("screen-load"),
+            main: document.getElementById("screen-main"),
+        };
+
+        function showScreen(name) {
+            changeThemeColor("#d6d6c5");
+            Object.values(screens).forEach(s => s.classList.remove("is-active"));
+            screens[name].classList.add("is-active");
+        }
+
+        setTimeout(() => showScreen("main"), 1000);
+
+        // ---------- PWA: service worker ----------
+        if ("serviceWorker" in navigator) {
+            // window.addEventListener("load", () => {
+            //     navigator.serviceWorker.register("./sw.js").catch(() => { });
+            // });
+        }
+    </script>
+</body>
+
+</html>
