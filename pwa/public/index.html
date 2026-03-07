@@ -118,7 +118,7 @@
         }
 
         .card-body {
-            padding: 18px 18px 10px;
+            /* padding: 18px 18px 10px; */
             min-height: 360px;
             position: relative;
         }
@@ -273,7 +273,7 @@
             /* box-shadow: 0 2px 0 rgba(0, 0, 0, .12); */
             border: 1px solid rgba(0, 0, 0, .08);
             font-weight: 400;
-            font-size: 16px;
+            font-size: 14px;
             letter-spacing: 0.01em;
             cursor: pointer;
             user-select: none;
@@ -390,6 +390,36 @@
         .ico-menu span:nth-child(3) {
             top: 22px;
         }
+
+        /* --- Side-by-side photo + fields --- */
+        .card-top {
+            padding: 10px 24px 44px 24px;
+        }
+        .card-row {
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+        }
+
+        .card-photo {
+            flex: 0 0 45%;
+            max-width: 45%;
+            border-radius: 14px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, .75);
+            border: 1px solid rgba(0, 0, 0, .10);
+        }
+
+        .card-photo img {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+
+        .card-fields {
+            flex: 1 1 auto;
+            min-width: 0;
+        }
     </style>
 </head>
 
@@ -433,45 +463,56 @@
                     <!-- <div class="danger-banner">ВАС РОЗШУКУЄ ТЦК</div> -->
 
                     <div class="card-body">
-                        <div class="card-head">
-                            <h1 class="h1 card-reserv-id">Резерв ID</h1>
-                            <div class="emblem" aria-hidden="true" title="Герб">
-                                <!-- Styled тризуб -->
-                                <svg width="110" height="126" viewBox="0 0 110 126" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg" role="img"
-                                    aria-label="Логотип Міністерства оборони України"
-                                    >
-                                    <path
-                                        d="M0 0.0310149H109.894C109.925 0.681693 109.986 1.27042 109.986 1.89012C109.986 17.5374 110.017 33.2156 109.986 48.8629C109.925 65.9665 105.51 81.7687 95.5705 95.8357C87.9149 106.68 77.9443 114.829 66.3375 121.026C63.0037 122.792 59.5463 124.28 56.089 125.798C55.5025 126.046 54.6073 126.077 54.0208 125.829C39.5741 120.004 26.9178 111.669 17.0706 99.3679C8.95201 89.2669 3.88948 77.7716 1.4817 65.0369C0.401284 59.2738 3.01462e-05 53.4486 0.0308992 47.5925C0.0926372 32.441 0.0308992 17.3205 0.0308992 2.16897C0.0308992 1.4873 0.0308992 0.805602 0.0308992 0L0 0.0310149ZM32.5977 74.4562C33.1533 68.5071 33.8015 62.7131 34.2337 56.8879C34.7276 50.3502 34.3572 43.8124 32.6594 37.4606C30.8073 30.489 27.1339 24.8188 20.6514 21.2245C20.0957 20.9147 19.4783 20.6978 18.861 20.388V89.7937C19.6636 89.7937 20.2809 89.7937 20.8983 89.7937C28.8008 89.7937 36.6724 89.7937 44.5749 89.7937C45.717 89.7937 46.2109 90.1655 46.7048 91.2189C48.3409 94.7202 50.1313 98.1905 51.9834 101.599C52.7551 103.024 53.8973 104.233 54.9468 105.658C58.5894 101.289 61.3059 96.7343 63.0963 91.6838C63.6519 90.1036 64.4236 89.7937 65.9362 89.7937C73.6535 89.8556 81.3707 89.8247 89.088 89.8247H90.971V20.388C90.2918 20.7288 89.7671 20.9457 89.2732 21.2245C82.2968 25.1286 78.6234 31.3565 76.8947 38.9478C74.8882 47.7474 75.4439 56.6091 76.3699 65.4397C76.6786 68.4453 77.0799 71.4197 77.4503 74.4562H62.7567C62.7567 73.6816 62.7567 72.9999 62.7567 72.3493C62.8802 67.6086 62.9728 62.837 63.158 58.0963C63.4358 51.2797 63.7445 44.463 64.1458 37.6774C64.3927 33.4325 64.7323 29.2496 63.8988 25.0047C62.5715 18.4359 59.5463 12.7967 54.916 7.8082C54.3295 8.48987 53.8047 9.07853 53.3108 9.69822C47.6926 16.5458 45.007 24.385 45.4392 33.2156C45.6553 37.9562 46.1492 42.697 46.3653 47.4376C46.6431 53.7275 46.8283 60.0174 47.0135 66.3382C47.0752 69.0029 47.0135 71.6986 47.0135 74.4872H32.5668L32.5977 74.4562Z"
-                                        fill="black"></path>
-                                </svg>
+                        <div class="card-top">
+                            <div class="card-head">
+                                <h1 class="h1 card-reserv-id">Резерв ID</h1>
+                                <div class="emblem" aria-hidden="true" title="Герб">
+                                    <!-- Styled тризуб -->
+                                    <svg width="110" height="126" viewBox="0 0 110 126" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg" role="img"
+                                        aria-label="Логотип Міністерства оборони України">
+                                        <path
+                                            d="M0 0.0310149H109.894C109.925 0.681693 109.986 1.27042 109.986 1.89012C109.986 17.5374 110.017 33.2156 109.986 48.8629C109.925 65.9665 105.51 81.7687 95.5705 95.8357C87.9149 106.68 77.9443 114.829 66.3375 121.026C63.0037 122.792 59.5463 124.28 56.089 125.798C55.5025 126.046 54.6073 126.077 54.0208 125.829C39.5741 120.004 26.9178 111.669 17.0706 99.3679C8.95201 89.2669 3.88948 77.7716 1.4817 65.0369C0.401284 59.2738 3.01462e-05 53.4486 0.0308992 47.5925C0.0926372 32.441 0.0308992 17.3205 0.0308992 2.16897C0.0308992 1.4873 0.0308992 0.805602 0.0308992 0L0 0.0310149ZM32.5977 74.4562C33.1533 68.5071 33.8015 62.7131 34.2337 56.8879C34.7276 50.3502 34.3572 43.8124 32.6594 37.4606C30.8073 30.489 27.1339 24.8188 20.6514 21.2245C20.0957 20.9147 19.4783 20.6978 18.861 20.388V89.7937C19.6636 89.7937 20.2809 89.7937 20.8983 89.7937C28.8008 89.7937 36.6724 89.7937 44.5749 89.7937C45.717 89.7937 46.2109 90.1655 46.7048 91.2189C48.3409 94.7202 50.1313 98.1905 51.9834 101.599C52.7551 103.024 53.8973 104.233 54.9468 105.658C58.5894 101.289 61.3059 96.7343 63.0963 91.6838C63.6519 90.1036 64.4236 89.7937 65.9362 89.7937C73.6535 89.8556 81.3707 89.8247 89.088 89.8247H90.971V20.388C90.2918 20.7288 89.7671 20.9457 89.2732 21.2245C82.2968 25.1286 78.6234 31.3565 76.8947 38.9478C74.8882 47.7474 75.4439 56.6091 76.3699 65.4397C76.6786 68.4453 77.0799 71.4197 77.4503 74.4562H62.7567C62.7567 73.6816 62.7567 72.9999 62.7567 72.3493C62.8802 67.6086 62.9728 62.837 63.158 58.0963C63.4358 51.2797 63.7445 44.463 64.1458 37.6774C64.3927 33.4325 64.7323 29.2496 63.8988 25.0047C62.5715 18.4359 59.5463 12.7967 54.916 7.8082C54.3295 8.48987 53.8047 9.07853 53.3108 9.69822C47.6926 16.5458 45.007 24.385 45.4392 33.2156C45.6553 37.9562 46.1492 42.697 46.3653 47.4376C46.6431 53.7275 46.8283 60.0174 47.0135 66.3382C47.0752 69.0029 47.0135 71.6986 47.0135 74.4872H32.5668L32.5977 74.4562Z"
+                                            fill="black"></path>
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <div class="card-row">
+                                <div class="card-photo">
+                                    <img src="https://placehold.co/300x400.png" alt="Фото" />
+                                </div>
+
+                                <div class="card-fields">
+                                    <div class="field">
+                                        <div class="label">Дата народження:</div>
+                                        <div class="value">23.06.1987</div>
+                                    </div>
+
+                                    <div class="field">
+                                        <div class="label">Відстрочка до:</div>
+                                        <div class="value">23.06.2026</div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="field">
-                            <div class="label">Дата народження:</div>
-                            <div class="value">23.06.1987</div>
-                        </div>
-                        <div class="field">
-                            <div class="label">Відстрочка до:</div>
-                            <div class="value">23.06.2026</div>
-                        </div>
-                    </div>
 
-                    <div class="status-bar" title="Статус">
-                        <div class="status-bar-ticker">
-                            20.01.2026 • Документ оновлено о 18:15 | 20.01.2026 • Документ оновлено о 18:15 | 20.01.2026
-                            • Документ оновлено о 18:15 | 20.01.2026 • Документ оновлено о 18:15 |
+                        <div class="status-bar" title="Статус">
+                            <div class="status-bar-ticker">
+                                20.01.2026 • Документ оновлено о 18:15 | 20.01.2026 • Документ оновлено о 18:15 |
+                                20.01.2026
+                                • Документ оновлено о 18:15 | 20.01.2026 • Документ оновлено о 18:15 |
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="footer">
-                        <div>
-                            <p class="role">Військовозобов’язаний</p>
-                            <p class="name">Варпіховський<br>Святослав<br>Леонідович</p>
+                        <div class="footer">
+                            <div>
+                                <p class="role">Військовозобов’язаний</p>
+                                <p class="name">Варпіховський<br>Святослав<br>Леонідович</p>
+                            </div>
+                            <button class="fab" id="addBtn" type="button" aria-label="Додати">+</button>
                         </div>
-                        <button class="fab" id="addBtn" type="button" aria-label="Додати">+</button>
-                    </div>
                 </section>
             </div>
             <nav class="bottom-nav" aria-label="Навігація">
@@ -517,7 +558,7 @@
             Object.values(screens).forEach(s => s.classList.remove("is-active"));
             console.log(screens[name]);
             screens[name].classList.add("is-active");
-    
+
         }
 
         setTimeout(() => showScreen("main"), 100);
@@ -528,6 +569,104 @@
             // });
         }
     </script>
+
+    <script>
+  // --- Toast helper ---
+  const toastEl = document.getElementById("toast");
+  let toastTimer = null;
+
+  function toast(msg, ms = 2500) {
+    alert(msg);
+    if (!toastEl) return;
+    toastEl.textContent = msg;
+    toastEl.classList.add("is-active");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toastEl.classList.remove("is-active"), ms);
+  }
+
+  // --- WebAuthn "biometric" auth (Face ID / Touch ID on iPhone if passkey exists) ---
+  async function biometricAuth() {
+    // Basic capability checks
+    if (!window.PublicKeyCredential || !navigator.credentials) {
+      toast("Біометрія недоступна в цьому браузері.");
+      return false;
+    }
+
+    // Optional: checks for platform authenticator availability
+    try {
+      const available = await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable?.();
+      if (available === false) {
+        toast("На пристрої немає доступного біометричного автентифікатора.");
+        return false;
+      }
+    } catch {
+      // Ignore: older browsers might not support the check
+    }
+
+    // IMPORTANT:
+    // This is a demo. In real auth you must:
+    // 1) fetch a server-generated challenge
+    // 2) send assertion back to server for verification
+    //
+    // Here we create a dummy challenge and rely on the system UI to appear.
+    const challenge = new Uint8Array(32);
+    crypto.getRandomValues(challenge);
+
+    const publicKey = {
+      challenge,
+      timeout: 60000,
+      userVerification: "required",
+
+      // This tells WebAuthn to use a "passkey"/platform credential if present.
+      // It can still prompt for device authentication UI on iOS.
+      allowCredentials: [],
+
+      // RP ID is your domain in production. On localhost this may behave differently.
+      // rpId: location.hostname, // You can uncomment if needed
+    };
+
+    try {
+      // This should trigger Face ID / Touch ID / device auth prompt if a credential exists.
+      const assertion = await navigator.credentials.get({ publicKey });
+
+      if (assertion) {
+        toast("Авторизація успішна.");
+        return true;
+      }
+
+      toast("Авторизацію скасовано.");
+      return false;
+    } catch (err) {
+      // Common cases:
+      // NotAllowedError: cancelled or no credential available
+      // InvalidStateError: no passkey/credential for this RP
+      // SecurityError: not a secure context (needs https)
+      const name = err?.name || "Error";
+
+      if (name === "NotAllowedError") {
+        toast("Скасовано або немає доступного passkey.");
+      } else if (name === "InvalidStateError") {
+        toast("Немає зареєстрованого passkey для цього сайту.");
+      } else if (name === "SecurityError") {
+        toast("Потрібен HTTPS (secure context) для біометрії.");
+      } else {
+        toast("Помилка авторизації: " + name);
+      }
+      return false;
+    }
+  }
+
+  // Hook FAB button
+  const addBtn = document.getElementById("addBtn");
+  addBtn?.addEventListener("click", async () => {
+    const ok = await biometricAuth();
+    if (!ok) return;
+
+    // Demo action after auth
+    // Replace with your real action (open modal, add item, etc.)
+    toast("FAB дія виконана після авторизації.");
+  });
+</script>
 </body>
 
 </html>
