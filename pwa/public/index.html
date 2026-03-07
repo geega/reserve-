@@ -17,7 +17,7 @@
             --text: #111;
             --muted: rgba(0, 0, 0, .55);
             --danger: #de310b;
-            --accent: #f39a1f;
+            --accent: #fd890c;
             --info: rgb(111 82 35);
             --radius: 14px;
             --shadow: 0 2px 0 rgba(0, 0, 0, .08);
@@ -101,7 +101,7 @@
         .card {
 
             background: var(--card);
-            border: 2px solid rgba(0, 0, 0, .25);
+            border: 1px solid rgba(0, 0, 0, .25);
             border-radius: var(--radius);
             overflow: hidden;
             box-shadow: var(--shadow);
@@ -139,6 +139,13 @@
             line-height: 1;
         }
 
+        .card-reserv-id {
+            font-size: 24px;
+            font-weight: 400;
+            letter-spacing: -0.00em;
+            line-height: 2;
+        }
+
         .emblem {
             width: 54px;
             height: 54px;
@@ -148,8 +155,8 @@
         }
 
         .emblem svg {
-            width: 54px;
-            height: 54px;
+            width: 35px;
+            height: 35px;
             fill: #111;
         }
 
@@ -158,7 +165,7 @@
         }
 
         .label {
-            font-size: 22px;
+            font-size: 16px;
             color: var(--muted);
             font-weight: 400;
             letter-spacing: -0.01em;
@@ -166,7 +173,7 @@
 
         .value {
             margin-top: 10px;
-            font-size: 28px;
+            font-size: 16px;
             font-weight: 400;
             letter-spacing: -0.02em;
         }
@@ -175,9 +182,9 @@
             background: var(--info);
             color: #fff;
             font-weight: 400;
-            font-size: 18px;
+            font-size: 16px;
             letter-spacing: -0.01em;
-            padding: 12px 14px;
+            padding: 3px 14px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -202,7 +209,7 @@
 
         .footer {
             position: relative;
-            padding: 16px 18px 18px;
+            padding: 20px 18px 18px;
             display: flex;
             align-items: flex-end;
             justify-content: space-between;
@@ -211,7 +218,7 @@
 
         .role {
             color: var(--muted);
-            font-size: 24px;
+            font-size: 20px;
             font-weight: 400;
             margin: 0 0 10px;
             letter-spacing: -0.02em;
@@ -219,7 +226,7 @@
 
         .name {
             margin: 0;
-            font-size: 30px;
+            font-size: 24px;
             font-weight: 400;
             line-height: 1.02;
             letter-spacing: -0.04em;
@@ -252,21 +259,22 @@
         .top-actions {
             display: flex;
             justify-content: flex-end;
-            margin: 10px 0 14px;
+            margin: 10px 0 40px;
         }
 
         .pill {
+            color: #292929;
             display: inline-flex;
             align-items: center;
             gap: 10px;
-            padding: 10px 16px;
+            padding: 8px 16px;
             border-radius: 999px;
             background: #fff;
-            box-shadow: 0 2px 0 rgba(0, 0, 0, .12);
+            /* box-shadow: 0 2px 0 rgba(0, 0, 0, .12); */
             border: 1px solid rgba(0, 0, 0, .08);
             font-weight: 400;
-            font-size: 22px;
-            letter-spacing: -0.02em;
+            font-size: 16px;
+            letter-spacing: 0.01em;
             cursor: pointer;
             user-select: none;
             -webkit-tap-highlight-color: transparent;
@@ -426,13 +434,13 @@
 
                     <div class="card-body">
                         <div class="card-head">
-                            <h1 class="h1">Резерв ID</h1>
+                            <h1 class="h1 card-reserv-id">Резерв ID</h1>
                             <div class="emblem" aria-hidden="true" title="Герб">
                                 <!-- Styled тризуб -->
                                 <svg width="110" height="126" viewBox="0 0 110 126" fill="none"
                                     xmlns="http://www.w3.org/2000/svg" role="img"
                                     aria-label="Логотип Міністерства оборони України"
-                                    class="size-[1.313rem] shrink-0 md:size-9 fullHeader:@[22rem]/logo:size-10">
+                                    >
                                     <path
                                         d="M0 0.0310149H109.894C109.925 0.681693 109.986 1.27042 109.986 1.89012C109.986 17.5374 110.017 33.2156 109.986 48.8629C109.925 65.9665 105.51 81.7687 95.5705 95.8357C87.9149 106.68 77.9443 114.829 66.3375 121.026C63.0037 122.792 59.5463 124.28 56.089 125.798C55.5025 126.046 54.6073 126.077 54.0208 125.829C39.5741 120.004 26.9178 111.669 17.0706 99.3679C8.95201 89.2669 3.88948 77.7716 1.4817 65.0369C0.401284 59.2738 3.01462e-05 53.4486 0.0308992 47.5925C0.0926372 32.441 0.0308992 17.3205 0.0308992 2.16897C0.0308992 1.4873 0.0308992 0.805602 0.0308992 0L0 0.0310149ZM32.5977 74.4562C33.1533 68.5071 33.8015 62.7131 34.2337 56.8879C34.7276 50.3502 34.3572 43.8124 32.6594 37.4606C30.8073 30.489 27.1339 24.8188 20.6514 21.2245C20.0957 20.9147 19.4783 20.6978 18.861 20.388V89.7937C19.6636 89.7937 20.2809 89.7937 20.8983 89.7937C28.8008 89.7937 36.6724 89.7937 44.5749 89.7937C45.717 89.7937 46.2109 90.1655 46.7048 91.2189C48.3409 94.7202 50.1313 98.1905 51.9834 101.599C52.7551 103.024 53.8973 104.233 54.9468 105.658C58.5894 101.289 61.3059 96.7343 63.0963 91.6838C63.6519 90.1036 64.4236 89.7937 65.9362 89.7937C73.6535 89.8556 81.3707 89.8247 89.088 89.8247H90.971V20.388C90.2918 20.7288 89.7671 20.9457 89.2732 21.2245C82.2968 25.1286 78.6234 31.3565 76.8947 38.9478C74.8882 47.7474 75.4439 56.6091 76.3699 65.4397C76.6786 68.4453 77.0799 71.4197 77.4503 74.4562H62.7567C62.7567 73.6816 62.7567 72.9999 62.7567 72.3493C62.8802 67.6086 62.9728 62.837 63.158 58.0963C63.4358 51.2797 63.7445 44.463 64.1458 37.6774C64.3927 33.4325 64.7323 29.2496 63.8988 25.0047C62.5715 18.4359 59.5463 12.7967 54.916 7.8082C54.3295 8.48987 53.8047 9.07853 53.3108 9.69822C47.6926 16.5458 45.007 24.385 45.4392 33.2156C45.6553 37.9562 46.1492 42.697 46.3653 47.4376C46.6431 53.7275 46.8283 60.0174 47.0135 66.3382C47.0752 69.0029 47.0135 71.6986 47.0135 74.4872H32.5668L32.5977 74.4562Z"
                                         fill="black"></path>
@@ -512,7 +520,7 @@
     
         }
 
-        setTimeout(() => showScreen("main"), 3500);
+        setTimeout(() => showScreen("main"), 100);
         // ---------- PWA: service worker ----------
         if ("serviceWorker" in navigator) {
             // window.addEventListener("load", () => {
