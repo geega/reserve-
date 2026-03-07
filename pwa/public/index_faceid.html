@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Face ID WebAuthn Test</title>
+<style>
+body{
+  font-family: Arial;
+  text-align:center;
+  margin-top:60px;
+}
+button{
+  padding:12px 20px;
+  margin:10px;
+  font-size:16px;
+}
+#log{
+  margin-top:30px;
+  white-space:pre-wrap;
+  text-align:left;
+  max-width:600px;
+  margin-left:auto;
+  margin-right:auto;
+  background:#f4f4f4;
+  padding:15px;
+}
+</style>
+</head>
+<body>
+
+<h1>Face ID / Passkey Test</h1>
+
+<button onclick="register()">Register Face ID</button>
+<button onclick="login()">Login with Face ID</button>
+
+<div id="log"></div>
+
+<script>
+
+function log(msg){
+ document.getElementById("log").textContent += msg + "\n";
+}
+
+function randomChallenge(){
+ const arr = new Uint8Array(32);
+ crypto.getRandomValues(arr);
+ return arr;
+}
+
+async function register(){
+
+ try{
+
+ const publicKey = {
+   challenge: randomChallenge(),
+
+   rp:{
+     name:"FaceID Test App"
+   },
+
+   user:{
+     id: new TextEncoder().encode("test-user"),
+     name:"test@example.com",
+     displayName:"Test User"
+   },
+
+   pubKeyCredParams:[
+     {type:"public-key",alg:-7},
+     {type:"public-key",alg:-257}
+   ],
+
+   authenticatorSelection:{
+     authenticatorAttachment:"platform",
+     userVerification:"required"
+   },
+
+   timeout:60000,
+   attestation:"none"
+ };
+
+ const credential = await navigator.credentials.create({publicKey});
+
+ log("REGISTER SUCCESS");
+ log(JSON.stringify(credential));
+
+ }catch(e){
+ log("REGISTER ERROR");
+ log(e);
+ }
+
+}
+
+async function login(){
+
+ try{
+
+ const publicKey = {
+   challenge: randomChallenge(),
+   userVerification:"required",
+   timeout:60000
+ };
+
+ const assertion = await navigator.credentials.get({publicKey});
+
+ log("LOGIN SUCCESS");
+ log(JSON.stringify(assertion));
+
+ }catch(e){
+ log("LOGIN ERROR");
+ log(e);
+ }
+
+}
+
+</script>
+
+</body>
+</html>
