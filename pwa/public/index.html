@@ -587,10 +587,10 @@
   // --- WebAuthn "biometric" auth (Face ID / Touch ID on iPhone if passkey exists) ---
   async function biometricAuth() {
     // Basic capability checks
-    if (!window.PublicKeyCredential || !navigator.credentials) {
-      toast("Біометрія недоступна в цьому браузері.");
-      return false;
-    }
+    // if (!window.PublicKeyCredential || !navigator.credentials) {
+    //   toast("Біометрія недоступна в цьому браузері.");
+    //   return false;
+    // }
 
     try {
      const credential = await navigator.credentials.get({
